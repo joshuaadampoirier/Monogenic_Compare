@@ -2,12 +2,12 @@ import numpy as np
 
 def fft_wavenumbers(x, y, shape_dat, shape_pdat):
     """
-    Calculates the u, v Fourier wavenumbers in the x and y
-    directions respectively.
+    Calculates the u, v Fourier wavenumbers in the x and y directions
+    respectively.
 
     Arguments:
         * x, y: 2d-arrays
-            Arrays with the x and y coordinates of the data points
+            Arrays with the x and y coordinates of the data points.
         * shape_dat: tube = (ny, nx)
             The number of data points in each direction before padding.
         * shape_pdat: tube = (ny, nx)
@@ -31,13 +31,13 @@ def fft_wavenumbers(x, y, shape_dat, shape_pdat):
 
     return u, v
 
-def fft_pad_data(data, n_pts=10, mode='linear_ramp'):
+def fft_pad_data(f, n_pts=10, mode='linear_ramp'):
     """
     Pad data and calculate FFT.
 
     Arguments:
-        * data: 2d-arrays
-            Array with the gridded data
+        * f: 2d-arrays
+            Array with the gridded data.
         * n_pts: int
             Number of array points to pad the data with. Defaults to 10.
         * mode: str
@@ -50,7 +50,7 @@ def fft_pad_data(data, n_pts=10, mode='linear_ramp'):
     Returns:
 
         * fpad: 2d-array
-            The FFT of the padded data
+            The FFT of the padded data.
         * mask: 2d-array
             Location of the padding points: {
                 True: data points.
@@ -59,19 +59,42 @@ def fft_pad_data(data, n_pts=10, mode='linear_ramp'):
     """
 
     # pad the data
-    data_p = np.pad(data, n_pts, mode)
+    fp = np.pad(f, n_pts, mode)
 
     # create a data mask
-    mask = np.zeros_like(data_p, dtype=bool)
-    mask[n_pts:n_pts+np.shape(data)[0], n_pts:n_pts+np.shape(data)[1]] = True
+    mask = np.zeros_like(fp, dtype=bool)
+    mask[n_pts:n_pts+np.shape(f)[0], n_pts:n_pts+np.shape(f)[1]] = True
 
     # compute the FFT
-    fpdat = np.fft.fft2(data_p)
+    F = np.fft.fft2(fp)
 
-    return fpdat, mask
+    return F, mask
 
-def ifft_unpad_data(data_p, mask, shape_dat, shape_pdat):
-    ifft_data = np.real(np.fft.ifft2(data_p))
-    data = ifft_data[mask]
+def ifft_unpad_data(F, mask, shape_dat):
+    """
+    Calculates the Inverse Fourier Transform of a padded 2d-array and masks the
+    data to the original shape.
 
-    return np.reshape(data, shape_dat)
+    Arguments:
+        * F: 2d-array
+            Array with the padded data in the wavenumber domain.
+        * mask: 2d-array
+            Location of padding points: {
+                True: Points to be kept.
+                False: Points to be removed.
+            }
+        * shape_dat: tube = (ny, nx)
+            The number of data points in each direction before padding.
+
+    Returns:
+        * data: 2d-array
+            The unpadded spatial-domain data.
+    """
+
+    # calculate the Inverse Fourier Transform
+    fp = np.real(np.fft.ifft2(F))
+
+    # mask the data to the original shape
+    f = np.reshape(fp[mask], shape_dat)
+
+    return f

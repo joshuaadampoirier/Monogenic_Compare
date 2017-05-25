@@ -1,7 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
+
 from vertical import dz
-from horizontal import *
+from horizontal import dh
+from total import dt
+from tilt import tilt, hyperbolic_tilt
 
 def plot_edges(size):
     # First Break - Hingeline
@@ -76,64 +79,8 @@ plt.ylabel('Northing Coordinate (km)')
 plot_edges(3)
 fig.savefig('Total Field.png')
 
-# first x and y derivatives using convolution
-dx1con, dy1con = dxdy_conv(tf, xp, yp)
-
-# Plotting the total-field anomaly
-fig = plt.figure(figsize=(10, 10))
-plt.title('dx1 - Convolution')
-plt.gca().set_aspect('equal', adjustable='box')
-plt.contourf(yp/1000, xp/1000, dx1con, 50, cmap=plt.cm.RdBu_r)
-cb = plt.colorbar()
-cb.set_label("nT/m", labelpad=30, rotation=0)
-plt.xlabel('Easting Coordinate (km)')
-plt.ylabel('Northing Coordinate (km)')
-plot_edges(3)
-fig.savefig('dx1 CONV.png')
-
-# Plotting the total-field anomaly
-fig = plt.figure(figsize=(10, 10))
-plt.title('dy1 - Convolution')
-plt.gca().set_aspect('equal', adjustable='box')
-plt.contourf(yp/1000, xp/1000, dy1con, 50, cmap=plt.cm.RdBu_r)
-cb = plt.colorbar()
-cb.set_label("nT/m", labelpad=30, rotation=0)
-plt.xlabel('Easting Coordinate (km)')
-plt.ylabel('Northing Coordinate (km)')
-plot_edges(3)
-fig.savefig('dy1 CONV.png')
-
-# first x and y derivatives using FFT
-dx1fft, dy1fft = dx_fft(tf, xp, yp), dy_fft(tf, xp, yp)
-
-# Plotting the total-field anomaly
-fig = plt.figure(figsize=(10, 10))
-plt.title('dx1 - FFT')
-plt.gca().set_aspect('equal', adjustable='box')
-plt.contourf(yp/1000, xp/1000, dx1fft, 50, cmap=plt.cm.RdBu_r)
-cb = plt.colorbar()
-cb.set_label("nT/m", labelpad=30, rotation=0)
-plt.xlabel('Easting Coordinate (km)')
-plt.ylabel('Northing Coordinate (km)')
-plot_edges(3)
-fig.savefig('dx1 FFT.png')
-
-# Plotting the total-field anomaly
-fig = plt.figure(figsize=(10, 10))
-plt.title('dy1 - FFT')
-plt.gca().set_aspect('equal', adjustable='box')
-plt.contourf(yp/1000, xp/1000, dy1fft, 50, cmap=plt.cm.RdBu_r)
-cb = plt.colorbar()
-cb.set_label("nT/m", labelpad=30, rotation=0)
-plt.xlabel('Easting Coordinate (km)')
-plt.ylabel('Northing Coordinate (km)')
-plot_edges(3)
-fig.savefig('dy1 FFT.png')
-
 # first vertical derivatives
 dz1 = dz(tf, xp, yp)
-
-# Plotting the total-field anomaly
 fig = plt.figure(figsize=(10, 10))
 plt.title('First Vertical Derivative')
 plt.gca().set_aspect('equal', adjustable='box')
@@ -144,3 +91,81 @@ plt.xlabel('Easting Coordinate (km)')
 plt.ylabel('Northing Coordinate (km)')
 plot_edges(3)
 fig.savefig('dz1.png')
+
+# second vertical derivative
+dz2 = dz(tf, xp, yp, 2)
+fig = plt.figure(figsize=(10, 10))
+plt.title('Second Vertical Derivative')
+plt.gca().set_aspect('equal', adjustable='box')
+plt.contourf(yp/1000, xp/1000, dz2, 50, cmap=plt.cm.RdBu_r)
+cb = plt.colorbar()
+cb.set_label("nT/sq m", labelpad=30, rotation=0)
+plt.xlabel('Easting Coordinate (km)')
+plt.ylabel('Northing Coordinate (km)')
+plot_edges(3)
+fig.savefig('dz2.png')
+
+# 1.5-order vertical derivative
+dz1p5 = dz(tf, xp, yp, 1.5)
+fig = plt.figure(figsize=(10, 10))
+plt.title('1.5th-order Vertical Derivative')
+plt.gca().set_aspect('equal', adjustable='box')
+plt.contourf(yp/1000, xp/1000, dz1p5, 50, cmap=plt.cm.RdBu_r)
+cb = plt.colorbar()
+cb.set_label("nT/m^1.5", labelpad=30, rotation=0)
+plt.xlabel('Easting Coordinate (km)')
+plt.ylabel('Northing Coordinate (km)')
+plot_edges(3)
+fig.savefig('dz1p5.png')
+
+# total horizontal derivative
+thd = dh(tf, xp, yp)
+fig = plt.figure(figsize=(10, 10))
+plt.title('Total Horizontal Derivative')
+plt.gca().set_aspect('equal', adjustable='box')
+plt.contourf(yp/1000, xp/1000, thd, 50, cmap=plt.cm.RdBu_r)
+cb = plt.colorbar()
+cb.set_label("nT/m", labelpad=30, rotation=0)
+plt.xlabel('Easting Coordinate (km)')
+plt.ylabel('Northing Coordinate (km)')
+plot_edges(3)
+fig.savefig('thd.png')
+
+# total derivative
+td = dt(tf, xp, yp)
+fig = plt.figure(figsize=(10, 10))
+plt.title('Total Derivative')
+plt.gca().set_aspect('equal', adjustable='box')
+plt.contourf(yp/1000, xp/1000, td, 50, cmap=plt.cm.RdBu_r)
+cb = plt.colorbar()
+cb.set_label("nT/m", labelpad=30, rotation=0)
+plt.xlabel('Easting Coordinate (km)')
+plt.ylabel('Northing Coordinate (km)')
+plot_edges(3)
+fig.savefig('td.png')
+
+# tilt angle
+theta = tilt(tf, xp, yp)
+fig = plt.figure(figsize=(10, 10))
+plt.title('Tilt Angle')
+plt.gca().set_aspect('equal', adjustable='box')
+plt.contourf(yp/1000, xp/1000, theta, 50, cmap=plt.cm.RdBu_r)
+cb = plt.colorbar()
+cb.set_label("Radians", labelpad=30, rotation=0)
+plt.xlabel('Easting Coordinate (km)')
+plt.ylabel('Northing Coordinate (km)')
+plot_edges(3)
+fig.savefig('tilt.png')
+
+# hyperbolic tilt angle
+hta = hyperbolic_tilt(tf, xp, yp)
+fig = plt.figure(figsize=(10, 10))
+plt.title('Hyperbolic Tilt Angle')
+plt.gca().set_aspect('equal', adjustable='box')
+plt.contourf(yp/1000, xp/1000, hta, 50, cmap=plt.cm.RdBu_r)
+cb = plt.colorbar()
+cb.set_label("Radians", labelpad=30, rotation=0)
+plt.xlabel('Easting Coordinate (km)')
+plt.ylabel('Northing Coordinate (km)')
+plot_edges(3)
+fig.savefig('hta.png')
