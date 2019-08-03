@@ -15,8 +15,7 @@ signals. The code is open source and is freely available from the SEG
 [here](http://software.seg.org/2017/0002/). Here, I compare Hidalgo-Gato and
 Barbosa's results with some popular edge detection filters based on derivatives.
 To do this, I will apply the filters to Hidalgo-Gato and Barbosa's synthetic
-data set (published with their code) and a real-world data set **TODO TODO TODO
-TODO TODO TODO TODO TODO**.
+data set (published with their code) and a real-world data set.
 
 ### Introduction  
 
@@ -76,14 +75,6 @@ filter is shown with and without the geologic bodies overlain.
 ![](figures/hta.png)
 ![](figures/nss.png)
 ![](figures/pss.png)
-
-### Real data set  
-
-**TODO TODO TODO TODO TODO**
-
-### Discussion  
-
-**TODO TODO TODO TODO TODO**
 
 ### References  
 
